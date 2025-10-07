@@ -17,7 +17,7 @@ class DynamicTrafficEnvironment:
         self.time_saved = 0
         self.total_time_saved = 0      
         self.episode_time_saved = 0    
-        self.road_clear_times = []  # ✅ Track clear times for each road
+        self.road_clear_times = []  
         print(f"Initialized environment with {num_roads} roads and {num_vehicle_types} vehicle types.")
         self.current_state = self.reset()
 
@@ -150,13 +150,12 @@ class DynamicTrafficEnvironment:
         self.episode_time_saved += vehicles_passed    
         self.road_openings[road_index] += 1 
 
-        # Calculate clear time AFTER taking action
         post_action_clear_time = self.calculate_road_clear_time(road_index)
         time_reduction = pre_action_clear_time - post_action_clear_time
         
         print(f"Time reduction on road {road_index}: {time_reduction:.2f} seconds")
 
-        # Check if road is completely cleared
+    
         if sum(leftover_vehicles) == 0:
             print(f"🎉 Road {road_index} is completely cleared!")
             self.road_clear_times.append((road_index, pre_action_clear_time))
@@ -273,7 +272,7 @@ for episode in range(50):
     total_reward = 0
     done = False
     
-    # Show initial clear times
+    
     env.print_road_clear_times()
     
     while not done:
