@@ -4,7 +4,7 @@ This repository contains a Python prototype for adaptive traffic signal control 
 
 ## Repository Contents
 
-- `import random.py`: Main script that defines:
+- `import random.py` (current filename in this repository): Main script that defines:
   - `DynamicTrafficEnvironment` for simulating road traffic states
   - `DQNAgent` for reinforcement learning-based traffic signal decisions
   - Training loop for running simulation episodes
