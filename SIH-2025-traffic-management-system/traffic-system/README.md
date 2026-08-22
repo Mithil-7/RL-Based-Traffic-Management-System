@@ -7,9 +7,9 @@ Built for SIH 2025.
 **The idea:** instead of fixed signal timings, cameras at every intersection feed a
 computer vision pipeline that counts vehicles, measures queues, and detects
 emergency vehicles in real time. That telemetry drives a set of reinforcement
-learning and rule-based agents — a per-intersection DQN, a network-wide
+learning and rule-based agents a per-intersection DQN, a network-wide
 coordinator, an emergency preemption agent, a dynamic route allocator, and an
-incident detector — that decide signal phases and reroute traffic, all with a
+incident detector that decide signal phases and reroute traffic, all with a
 hard safety layer (minimum/maximum green time, mandatory yellow/all-red
 clearance) that no learned policy can override.
 
