@@ -1,0 +1,45 @@
+# --- Core web / API ---
+fastapi==0.115.0
+uvicorn[standard]==0.30.6
+websockets==13.1
+pydantic==2.9.2
+pydantic-settings==2.5.2
+
+# --- Dashboard (pure Python, FastAPI-native) ---
+nicegui==2.7.0
+
+# --- Messaging ---
+paho-mqtt==2.1.0
+
+# --- Storage ---
+sqlalchemy==2.0.35
+asyncpg==0.29.0
+psycopg2-binary==2.9.9
+redis==5.0.8
+alembic==1.13.2
+
+# --- RL / simulation ---
+gymnasium==0.29.1
+torch==2.4.1
+numpy==1.26.4
+networkx==3.3
+
+# --- Computer vision (edge) ---
+opencv-python-headless==4.10.0.84
+ultralytics==8.2.103
+pillow==10.4.0
+
+# --- Observability ---
+structlog==24.4.0
+prometheus-client==0.20.0
+
+# --- Utilities ---
+python-dotenv==1.0.1
+tenacity==9.0.0
+
+# --- Testing / dev ---
+pytest==8.3.3
+pytest-asyncio==0.24.0
+httpx==0.27.2
+fakeredis==2.24.1
+ruff==0.6.9

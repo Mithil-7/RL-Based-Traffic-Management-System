@@ -1,0 +1,29 @@
+{
+  "city_name": "SIH Demo City (3x3 grid)",
+  "description": "Synthetic 3x3 arterial grid used for local development, training, and demos. Replace with a real OSM-derived extract for a target city (see scripts/import_osm_city.py).",
+  "intersections": [
+    {"id": "I_A1", "name": "MG Road & 1st Ave",   "lat": 12.9716, "lon": 77.5946, "approaches": ["N", "S", "E", "W"]},
+    {"id": "I_A2", "name": "MG Road & 2nd Ave",   "lat": 12.9716, "lon": 77.6046, "approaches": ["N", "S", "E", "W"]},
+    {"id": "I_A3", "name": "MG Road & 3rd Ave",   "lat": 12.9716, "lon": 77.6146, "approaches": ["N", "S", "E", "W"]},
+    {"id": "I_B1", "name": "Ring Road & 1st Ave", "lat": 12.9816, "lon": 77.5946, "approaches": ["N", "S", "E", "W"]},
+    {"id": "I_B2", "name": "Ring Road & 2nd Ave", "lat": 12.9816, "lon": 77.6046, "approaches": ["N", "S", "E", "W"]},
+    {"id": "I_B3", "name": "Ring Road & 3rd Ave", "lat": 12.9816, "lon": 77.6146, "approaches": ["N", "S", "E", "W"]},
+    {"id": "I_C1", "name": "Station Road & 1st Ave", "lat": 12.9916, "lon": 77.5946, "approaches": ["N", "S", "E", "W"]},
+    {"id": "I_C2", "name": "Station Road & 2nd Ave", "lat": 12.9916, "lon": 77.6046, "approaches": ["N", "S", "E", "W"]},
+    {"id": "I_C3", "name": "Station Road & 3rd Ave", "lat": 12.9916, "lon": 77.6146, "approaches": ["N", "S", "E", "W"]}
+  ],
+  "roads": [
+    {"from": "I_A1", "to": "I_A2", "lanes": 2, "length_m": 850, "free_flow_speed_kmh": 45, "bidirectional": true},
+    {"from": "I_A2", "to": "I_A3", "lanes": 2, "length_m": 850, "free_flow_speed_kmh": 45, "bidirectional": true},
+    {"from": "I_B1", "to": "I_B2", "lanes": 2, "length_m": 850, "free_flow_speed_kmh": 45, "bidirectional": true},
+    {"from": "I_B2", "to": "I_B3", "lanes": 2, "length_m": 850, "free_flow_speed_kmh": 45, "bidirectional": true},
+    {"from": "I_C1", "to": "I_C2", "lanes": 2, "length_m": 850, "free_flow_speed_kmh": 45, "bidirectional": true},
+    {"from": "I_C2", "to": "I_C3", "lanes": 2, "length_m": 850, "free_flow_speed_kmh": 45, "bidirectional": true},
+    {"from": "I_A1", "to": "I_B1", "lanes": 2, "length_m": 1100, "free_flow_speed_kmh": 50, "bidirectional": true},
+    {"from": "I_B1", "to": "I_C1", "lanes": 2, "length_m": 1100, "free_flow_speed_kmh": 50, "bidirectional": true},
+    {"from": "I_A2", "to": "I_B2", "lanes": 3, "length_m": 1100, "free_flow_speed_kmh": 50, "bidirectional": true},
+    {"from": "I_B2", "to": "I_C2", "lanes": 3, "length_m": 1100, "free_flow_speed_kmh": 50, "bidirectional": true},
+    {"from": "I_A3", "to": "I_B3", "lanes": 2, "length_m": 1100, "free_flow_speed_kmh": 50, "bidirectional": true},
+    {"from": "I_B3", "to": "I_C3", "lanes": 2, "length_m": 1100, "free_flow_speed_kmh": 50, "bidirectional": true}
+  ]
+}

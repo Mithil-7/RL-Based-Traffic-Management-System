@@ -1,0 +1,32 @@
+[project]
+name = "traffic-system"
+version = "0.1.0"
+description = "Multi-agent reinforcement learning traffic management system (SIH 2025)"
+requires-python = ">=3.11"
+readme = "README.md"
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+src = ["src", "tests", "scripts"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+ignore = [
+    "E501",  # line length is enforced by formatting, not worth failing CI over in a few long docstrings
+    "B008",  # FastAPI's Depends(...) pattern relies on function calls in default arguments
+    "SIM108",  # if/else over a nested ternary reads better for these 3+ branch compass/renderer choices
+    "B027",  # VideoSource.release() intentionally has a trivial default body, not every subclass needs one
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["traffic_system"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+testpaths = ["tests"]
+
+[tool.coverage.run]
+source = ["traffic_system"]
+omit = ["*/agents/backends/torch_backend.py"]  # not exercised without torch installed; see README

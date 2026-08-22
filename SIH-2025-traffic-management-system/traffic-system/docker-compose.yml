@@ -1,0 +1,120 @@
+name: traffic-system
+
+x-common-env: &common-env
+  TRAFFIC_ENV: production
+  TRAFFIC_LOG_JSON: "true"
+  TRAFFIC_MQTT_HOST: mosquitto
+  TRAFFIC_MQTT_PORT: "1883"
+  TRAFFIC_REDIS_URL: redis://redis:6379/0
+  TRAFFIC_POSTGRES_DSN: postgresql+psycopg2://traffic:traffic@postgres:5432/traffic
+  TRAFFIC_POSTGRES_DSN_ASYNC: postgresql+asyncpg://traffic:traffic@postgres:5432/traffic
+  TRAFFIC_QNET_BACKEND: torch
+  TRAFFIC_CV_BACKEND: mock # flip to `yolo` once real cameras + weights are in place
+
+services:
+  postgres:
+    image: timescale/timescaledb:2.17.1-pg16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: traffic
+      POSTGRES_PASSWORD: traffic
+      POSTGRES_DB: traffic
+    ports: ["5432:5432"]
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./infra/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U traffic"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7.2-alpine
+    restart: unless-stopped
+    ports: ["6379:6379"]
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  mosquitto:
+    image: eclipse-mosquitto:2.0
+    restart: unless-stopped
+    ports: ["1883:1883"]
+    volumes:
+      - ./infra/mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+      - mosquitto_data:/mosquitto/data
+    healthcheck:
+      test: ["CMD-SHELL", "mosquitto_sub -t '$$SYS/#' -C 1 -i healthcheck -W 3 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  ingestion:
+    build:
+      context: .
+      dockerfile: infra/docker/ingestion.Dockerfile
+    restart: unless-stopped
+    environment: *common-env
+    depends_on:
+      postgres: { condition: service_healthy }
+      redis: { condition: service_healthy }
+      mosquitto: { condition: service_healthy }
+
+  brain:
+    build:
+      context: .
+      dockerfile: infra/docker/brain.Dockerfile
+    restart: unless-stopped
+    environment: *common-env
+    volumes:
+      - ./models:/app/models:ro
+    depends_on:
+      postgres: { condition: service_healthy }
+      redis: { condition: service_healthy }
+      mosquitto: { condition: service_healthy }
+
+  api:
+    build:
+      context: .
+      dockerfile: infra/docker/api.Dockerfile
+    restart: unless-stopped
+    environment: *common-env
+    ports: ["8000:8000"]
+    depends_on:
+      postgres: { condition: service_healthy }
+      redis: { condition: service_healthy }
+
+  dashboard:
+    build:
+      context: .
+      dockerfile: infra/docker/dashboard.Dockerfile
+    restart: unless-stopped
+    environment:
+      <<: *common-env
+      TRAFFIC_API_BASE_URL: http://api:8000
+    ports: ["8080:8080"]
+    depends_on: [api]
+
+  # One simulated edge agent per intersection in the sample city graph.
+  # Real deployments delete this service entirely and instead run the
+  # `edge` image directly on each intersection's Raspberry Pi, pointed at
+  # this stack's public MQTT endpoint.
+  edge-fleet:
+    build:
+      context: .
+      dockerfile: infra/docker/edge.Dockerfile
+    restart: unless-stopped
+    environment: *common-env
+    entrypoint: ["python", "scripts/run_edge_simulation.py"]
+    depends_on:
+      mosquitto: { condition: service_healthy }
+
+volumes:
+  postgres_data:
+  redis_data:
+  mosquitto_data:
