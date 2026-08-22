@@ -189,5 +189,5 @@ improve, not gaps that were hidden.
 
 ## License
 
-Add a LICENSE file appropriate for your SIH submission (MIT is a common default for
-hackathon projects: https://choosealicense.com/licenses/mit/).
+
+This project is licensed under the MIT License — see [LICENSE](LICENSE) for details.
