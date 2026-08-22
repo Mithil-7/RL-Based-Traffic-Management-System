@@ -1,0 +1,61 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    env:
+      TRAFFIC_QNET_BACKEND: numpy # CI runs the dependency-light backend; torch is exercised in the docker-build job's image build, not here
+      TRAFFIC_ENV: test
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install \
+            numpy gymnasium networkx pytest pytest-asyncio pytest-cov \
+            pydantic pydantic-settings fastapi "uvicorn[standard]" websockets httpx \
+            redis fakeredis sqlalchemy paho-mqtt structlog prometheus-client \
+            python-dotenv tenacity ruff opencv-python-headless pillow nicegui
+
+      - name: Lint (ruff)
+        run: ruff check src/ tests/ scripts/
+
+      - name: Run tests with coverage
+        run: pytest tests/ -v --cov=traffic_system --cov-report=term-missing --cov-report=xml
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-xml
+          path: coverage.xml
+
+  docker-build:
+    runs-on: ubuntu-latest
+    needs: lint-and-test
+    strategy:
+      matrix:
+        service: [api, brain, edge, dashboard, ingestion]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build ${{ matrix.service }} image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: infra/docker/${{ matrix.service }}.Dockerfile
+          push: false
+          tags: traffic-system-${{ matrix.service }}:ci
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
