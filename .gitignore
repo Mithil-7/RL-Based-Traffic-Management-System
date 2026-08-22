@@ -1,0 +1,56 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Env files with real secrets
+.env
+!.env.example
+
+# Trained model checkpoints (large binary artifacts in general -- see
+# models/README.md). The one exception is the small shared starter
+# checkpoint, committed so the stack has a trained (if lightly-trained)
+# brain immediately after `git clone && docker compose up`, without
+# requiring a training run first.
+models/*.npz
+models/*.pt
+!models/shared.npz
+!models/.gitkeep
+models/training_history.json
+
+# Databases / local dev artifacts
+*.db
+*.sqlite3
+*.db-journal
+
+# Test / tooling caches
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+htmlcov/
+.coverage
+*.cover
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker volumes if ever mounted locally
+infra/postgres/data/
+infra/mosquitto/data/
+
+# NiceGUI runtime files
+.nicegui/
