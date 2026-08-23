@@ -11,13 +11,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt .
-# The API service never needs torch/ultralytics/opencv (those belong to the
-# brain and edge images) -- installing only what it needs keeps this image
-# small and its build fast.
 RUN pip install --no-cache-dir \
-        fastapi uvicorn[standard] websockets pydantic pydantic-settings \
-        sqlalchemy asyncpg psycopg2-binary redis paho-mqtt \
-        structlog prometheus-client python-dotenv tenacity
+        fastapi==0.115.0 "uvicorn[standard]==0.30.6" websockets==13.1 pydantic==2.9.2 pydantic-settings==2.5.2 \
+        sqlalchemy==2.0.35 asyncpg==0.29.0 psycopg2-binary==2.9.9 redis==5.0.8 paho-mqtt==2.1.0 \
+        structlog==24.4.0 prometheus-client==0.20.0 python-dotenv==1.0.1 tenacity==9.0.0
 
 COPY src/ src/
 COPY city_map/ city_map/
